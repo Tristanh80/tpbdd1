@@ -19,10 +19,10 @@ import java.util.List;
 // Il faut avoir des endpoints pour toutes les donnees a afficher sur le front end (Pour toutes les tables)
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/clubSportif")
 public class ClubSportifController {
 //    Ici on va faire un endpoint qui va nous permettre de recuperer tous les clubs sportifs
-    @GetMapping("/clubSportifs")
+    @GetMapping("")
     public ResponseEntity<List<ClubSportif>> get() {
         List<ClubSportif> clubSportifs = new ArrayList<>();
         Connection connection = null;
