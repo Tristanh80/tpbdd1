@@ -1,5 +1,6 @@
 package com.example.backendtporacle.controller;
 
+import com.example.backendtporacle.databaseconnection.DatabaseConnection;
 import com.example.backendtporacle.datas.ClubSportif;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,23 +20,16 @@ import java.util.List;
 // Il faut avoir des endpoints pour toutes les donnees a afficher sur le front end (Pour toutes les tables)
 
 @RestController
-@RequestMapping("/clubSportif")
+@RequestMapping("/clubsportif")
 public class ClubSportifController {
 //    Ici on va faire un endpoint qui va nous permettre de recuperer tous les clubs sportifs
     @GetMapping("")
     public ResponseEntity<List<ClubSportif>> get() {
         List<ClubSportif> clubSportifs = new ArrayList<>();
-        Connection connection = null;
-        String url = "jdbc:oracle:thin:@localhost:1521:xe"; // Remplacez SID par le SID de votre base de données
-        String username = "Nord";
-        String password = "Nord";
+        Connection connection = DatabaseConnection.getConnection("Nord", "Nord");
         try {
-            connection = DriverManager.getConnection(url, username, password);
-            System.out.println("Connection successful");
             Statement statement = null;
             ResultSet resultSet = null;
-
-            try {
                 statement = connection.createStatement();
                 String sql = "SELECT * FROM ClubSportifCentral";
                 resultSet = statement.executeQuery(sql);
@@ -55,27 +49,8 @@ public class ClubSportifController {
                 e.printStackTrace();
             } finally {
                 // Fermez les ressources
-                try {
-                    if (resultSet != null) resultSet.close();
-                    if (statement != null) statement.close();
-                    if (connection != null) connection.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+                DatabaseConnection.closeConnection(connection);
             }
-        } catch (SQLException e) {
-            System.out.println("Connection unsuccessful");
-            e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                try {
-                    connection.close();
-                    System.out.println("Connection closed");
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
 
         return ResponseEntity.ok(clubSportifs);
     }
