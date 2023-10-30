@@ -20,7 +20,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
-public class Controller {
+public class ClubSportifController {
 //    Ici on va faire un endpoint qui va nous permettre de recuperer tous les clubs sportifs
     @GetMapping("/clubSportifs")
     public ResponseEntity<List<ClubSportif>> get() {
