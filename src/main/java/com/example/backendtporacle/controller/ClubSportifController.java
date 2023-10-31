@@ -3,6 +3,8 @@ package com.example.backendtporacle.controller;
 import com.example.backendtporacle.databaseconnection.DatabaseConnection;
 import com.example.backendtporacle.datas.request.ClubSportifRequest;
 import com.example.backendtporacle.datas.response.ClubSportif;
+import com.example.backendtporacle.util.Utils;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -58,20 +60,27 @@ public class ClubSportifController {
     }
 
     @PostMapping("")
-    public ResponseEntity<ClubSportif> createClub(@RequestBody ClubSportifRequest clubSportifRequest) {
+    public ResponseEntity<Boolean> createClub(HttpServletRequest request,
+                                                  @RequestBody ClubSportifRequest clubSportifRequest) {
         Connection connection = DatabaseConnection.getConnection("Nord", "Nord");
+        String region = Utils.obtenirCookieRegion(request);
         try {
             Statement statement = null;
             ResultSet resultSet = null;
             statement = connection.createStatement();
-            String sql = "INSERT INTO ClubSportifCentral (NomClub, DateCreation, Dirigeant, Ville, Region) VALUES ('" + clubSportifRequest.getNomClub() + "', '" + clubSportifRequest.getDateCreation() + "', '" + clubSportifRequest.getDirigeant() + "', '" + clubSportifRequest.getVille() + "', " + clubSportifRequest.getRegion() + ")";
+            String uuid = Utils.generateUUID();
+            String sql =
+                    "INSERT INTO ClubSportif_" + region +  " (CodeClub, NomClub, DateCreation, Dirigeant, Ville, " +
+                            "Region) VALUES " +
+                            "('"  + uuid + "', '" + clubSportifRequest.getNomClub() + "', " + Utils.transformDate(clubSportifRequest.getDateCreation()) + ", '" + clubSportifRequest.getDirigeant() + "', '" + clubSportifRequest.getVille() + "', " + clubSportifRequest.getRegion() + ")";
             statement.executeUpdate(sql);
         } catch (SQLException e) {
             e.printStackTrace();
+            return ResponseEntity.ok(false);
         } finally {
             // Fermez les ressources
             DatabaseConnection.closeConnection(connection);
         }
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(true);
     }
 }

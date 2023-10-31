@@ -3,7 +3,8 @@ package com.example.backendtporacle.controller;
 import com.example.backendtporacle.databaseconnection.DatabaseConnection;
 import com.example.backendtporacle.datas.request.DirigeantRequest;
 import com.example.backendtporacle.datas.response.Dirigeant;
-import com.example.backendtporacle.uuid.GenerateUUID;
+import com.example.backendtporacle.util.Utils;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,7 +18,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/dirigeant")
@@ -52,15 +52,16 @@ public class DirigeantController {
     }
 
     @PostMapping("")
-    public ResponseEntity<Boolean> create(@RequestBody DirigeantRequest dirigeant) {
+    public ResponseEntity<Boolean> create(HttpServletRequest request, @RequestBody DirigeantRequest dirigeant) {
         Connection connection = DatabaseConnection.getConnection("Nord", "Nord");
         try {
             Statement statement = null;
             ResultSet resultSet = null;
             statement = connection.createStatement();
-            String uuid = GenerateUUID.generateUUID();
+            String region = Utils.obtenirCookieRegion(request);
+            String uuid = Utils.generateUUID();
             String sql =
-                    "INSERT INTO Dirigeant_Nord VALUES ('" + uuid + "', '" + dirigeant.getNom() + "', '" + dirigeant.getPrenom() + "', '" + dirigeant.getProfession() + "')";
+                    "INSERT INTO Dirigeant_" + region + " VALUES ('" + uuid + "', '" + dirigeant.getNom() + "', '" + dirigeant.getPrenom() + "', '" + dirigeant.getProfession() + "')";
             resultSet = statement.executeQuery(sql);
         } catch (SQLException e) {
             e.printStackTrace();
