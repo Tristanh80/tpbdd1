@@ -29,4 +29,9 @@ public class Utils {
     public static String transformDate(Date str) {
         return "TO_DATE('" + str.toString() + "', 'yyyy-mm-dd')";
     }
+
+    public static String generateRandomNumber() {
+        Integer randomNumber = (int) (Math.random() * 1000000000);
+        return randomNumber.toString();
+    }
 }

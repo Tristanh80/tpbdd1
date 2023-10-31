@@ -1,5 +1,6 @@
 package com.example.backendtporacle.datas.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,6 +14,7 @@ public class Personnel {
     Integer Code;
     String Nom;
     String Prenom;
+    @JsonFormat(pattern = "dd/MM/yyyy")
     Date DateDeNaissance;
     String Fonction;
     Integer Region;
