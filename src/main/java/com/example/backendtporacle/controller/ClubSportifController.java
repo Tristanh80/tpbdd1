@@ -7,8 +7,10 @@ import com.example.backendtporacle.datas.response.Stade;
 import com.example.backendtporacle.util.Utils;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -82,6 +84,47 @@ public class ClubSportifController {
             return ResponseEntity.ok(false);
         } finally {
             // Fermez les ressources
+            DatabaseConnection.closeConnection(connection);
+        }
+        return ResponseEntity.ok(true);
+    }
+
+    @PutMapping("")
+    public ResponseEntity<?> update(HttpServletRequest request, @RequestBody ClubSportif clubSportifRequest) {
+        String region = Utils.obtenirCookieRegion(request);
+        Connection connection = DatabaseConnection.getConnection(region, region);
+        try {
+            Statement statement = null;
+            ResultSet resultSet = null;
+            statement = connection.createStatement();
+            String sql = "UPDATE ClubSportif_" + region + " SET NomClub = '" + clubSportifRequest.getNomClub() + "' " +
+                    "WHERE CodeClub = '" + clubSportifRequest.getCodeClub() + "'";
+            statement.executeUpdate(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return ResponseEntity.ok(false);
+        } finally {
+            DatabaseConnection.closeConnection(connection);
+        }
+        return ResponseEntity.ok(true);
+    }
+
+    @DeleteMapping("")
+    public ResponseEntity<?> delete(HttpServletRequest request, @RequestBody ClubSportif clubSportifRequest) {
+        String region = Utils.obtenirCookieRegion(request);
+        Connection connection = DatabaseConnection.getConnection(region, region);
+        try {
+            Statement statement = null;
+            ResultSet resultSet = null;
+            statement = connection.createStatement();
+            String sql =
+                    "DELETE FROM ClubSportif_" + region + " WHERE CodeClub = '" + clubSportifRequest.getCodeClub() +
+                            "'";
+            statement.executeUpdate(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return ResponseEntity.ok(false);
+        } finally {
             DatabaseConnection.closeConnection(connection);
         }
         return ResponseEntity.ok(true);
