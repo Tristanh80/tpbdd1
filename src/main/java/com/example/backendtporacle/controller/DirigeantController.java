@@ -2,12 +2,15 @@ package com.example.backendtporacle.controller;
 
 import com.example.backendtporacle.databaseconnection.DatabaseConnection;
 import com.example.backendtporacle.datas.request.DirigeantRequest;
+import com.example.backendtporacle.datas.response.ClubSportif;
 import com.example.backendtporacle.datas.response.Dirigeant;
 import com.example.backendtporacle.util.Utils;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -70,6 +73,44 @@ public class DirigeantController {
             DatabaseConnection.closeConnection(connection);
         }
 
+        return ResponseEntity.ok(true);
+    }
+
+    @PutMapping("")
+    public ResponseEntity<?> update(HttpServletRequest request, @RequestBody Dirigeant dirigeant) {
+        String region = Utils.obtenirCookieRegion(request);
+        Connection connection = DatabaseConnection.getConnection(region, region);
+        try {
+            Statement statement = null;
+            ResultSet resultSet = null;
+            statement = connection.createStatement();
+            String sql = "UPDATE Dirigeant_" + region + " SET Nom = '" + dirigeant.getNom() + "', Prenom = '" + dirigeant.getPrenom() + "', Profession = '" + dirigeant.getProfession() + "' WHERE Code = '" + dirigeant.getCode() + "'";
+            statement.executeUpdate(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return ResponseEntity.ok(false);
+        } finally {
+            DatabaseConnection.closeConnection(connection);
+        }
+        return ResponseEntity.ok(true);
+    }
+
+    @DeleteMapping("")
+    public ResponseEntity<?> delete(HttpServletRequest request, @RequestBody Dirigeant dirigeant) {
+        String region = Utils.obtenirCookieRegion(request);
+        Connection connection = DatabaseConnection.getConnection(region, region);
+        try {
+            Statement statement = null;
+            ResultSet resultSet = null;
+            statement = connection.createStatement();
+            String sql = "DELETE FROM Dirigeant_" + region + " WHERE Code = '" + dirigeant.getCode() + "'";
+            statement.executeUpdate(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return ResponseEntity.ok(false);
+        } finally {
+            DatabaseConnection.closeConnection(connection);
+        }
         return ResponseEntity.ok(true);
     }
 }

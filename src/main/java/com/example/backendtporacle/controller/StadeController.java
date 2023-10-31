@@ -3,12 +3,15 @@ package com.example.backendtporacle.controller;
 import com.example.backendtporacle.databaseconnection.DatabaseConnection;
 import com.example.backendtporacle.datas.request.ClubSportifRequest;
 import com.example.backendtporacle.datas.request.StadeRequest;
+import com.example.backendtporacle.datas.response.ClubSportif;
 import com.example.backendtporacle.datas.response.Stade;
 import com.example.backendtporacle.util.Utils;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -73,6 +76,44 @@ public class StadeController {
             return ResponseEntity.ok(false);
         } finally {
             // Fermez les ressources
+            DatabaseConnection.closeConnection(connection);
+        }
+        return ResponseEntity.ok(true);
+    }
+
+    @PutMapping("")
+    public ResponseEntity<?> update(HttpServletRequest request, @RequestBody Stade stade) {
+        String region = Utils.obtenirCookieRegion(request);
+        Connection connection = DatabaseConnection.getConnection(region, region);
+        try {
+            Statement statement = null;
+            ResultSet resultSet = null;
+            statement = connection.createStatement();
+            String sql = "UPDATE Stade_" + region + " SET Nom = '" + stade.getNom() + "', Ville = '" + stade.getVille() + "', Region = " + stade.getRegion() + ", Capacite = " + stade.getCapacite() + " WHERE Code = '" + stade.getCode() + "'";
+            statement.executeUpdate(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return ResponseEntity.ok(false);
+        } finally {
+            DatabaseConnection.closeConnection(connection);
+        }
+        return ResponseEntity.ok(true);
+    }
+
+    @DeleteMapping("")
+    public ResponseEntity<?> delete(HttpServletRequest request, @RequestBody Stade Stade) {
+        String region = Utils.obtenirCookieRegion(request);
+        Connection connection = DatabaseConnection.getConnection(region, region);
+        try {
+            Statement statement = null;
+            ResultSet resultSet = null;
+            statement = connection.createStatement();
+            String sql = "DELETE FROM Stade_" + region + " WHERE Code = '" + Stade.getCode() + "'";
+            statement.executeUpdate(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return ResponseEntity.ok(false);
+        } finally {
             DatabaseConnection.closeConnection(connection);
         }
         return ResponseEntity.ok(true);
