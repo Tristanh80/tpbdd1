@@ -2,6 +2,7 @@ package com.example.backendtporacle.controller;
 
 import com.example.backendtporacle.databaseconnection.DatabaseConnection;
 import com.example.backendtporacle.datas.response.Calendrier;
+import com.example.backendtporacle.datas.response.CalendrierView;
 import com.example.backendtporacle.util.Utils;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
@@ -19,10 +20,10 @@ import java.util.List;
 @RequestMapping("/calendrier")
 public class CalendrierController {
      //    Ici on va faire un endpoint qui va nous permettre de recuperer tous les calendriers
-    @GetMapping("/listeCalendriers")
-    public ResponseEntity<List<Calendrier>> get(HttpServletRequest request) {
+    @GetMapping("")
+    public ResponseEntity<List<CalendrierView>> get(HttpServletRequest request) {
         String region = Utils.obtenirCookieRegion(request);
-        List<Calendrier> calendriers = new ArrayList<>();
+        List<CalendrierView> calendriers = new ArrayList<>();
         Connection connection = DatabaseConnection.getConnection(region, region);
         try {
             Statement statement = null;
@@ -31,14 +32,16 @@ public class CalendrierController {
             String sql = "SELECT * FROM Calendrier_" + region + "_MV";
             resultSet = statement.executeQuery(sql);
             while (resultSet.next()) {
-                Calendrier calendrier = new Calendrier();
-                calendrier.setId(resultSet.getInt("id"));
-                calendrier.setCodeMatch(resultSet.getString("CodeMatch"));
+                CalendrierView calendrier = new CalendrierView();
+                calendrier.setClubA_Nom(resultSet.getString("ClubA_Nom"));
+                calendrier.setClubB_Nom(resultSet.getString("ClubB_Nom"));
                 calendrier.setDateMatch(resultSet.getDate("DateMatch"));
                 calendrier.setHeure(resultSet.getTimestamp("Heure"));
-                calendrier.setCLubA(resultSet.getString("ClubA"));
-                calendrier.setCLubB(resultSet.getString("ClubB"));
                 calendrier.setStade(resultSet.getString("Stade"));
+                calendrier.setCode_ClubB(resultSet.getString("Code_ClubB"));
+                calendrier.setCode_ClubA(resultSet.getString("Code_ClubA"));
+                calendrier.setCalendrier_id(resultSet.getInt("Calendrier_id"));
+                calendrier.setCodeMatch(resultSet.getString("CodeMatch"));
                 calendriers.add(calendrier);
             }
         } catch (Exception e) {

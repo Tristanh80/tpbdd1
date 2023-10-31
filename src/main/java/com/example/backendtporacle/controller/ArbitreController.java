@@ -20,7 +20,7 @@ import java.util.List;
 @RequestMapping("/arbitre")
 public class ArbitreController {
      //    Ici on va faire un endpoint qui va nous permettre de recuperer tous les arbitres
-    @GetMapping("/listeArbitres")
+    @GetMapping("")
     public ResponseEntity<List<Arbitre>> get(HttpServletRequest request) {
         String region = Utils.obtenirCookieRegion(request);
         List<Arbitre> arbitres = new ArrayList<>();
