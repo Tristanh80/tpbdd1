@@ -85,14 +85,14 @@ public class EquipeController {
     }
 
     @PutMapping("")
-    public ResponseEntity<?> update(HttpServletRequest request, @RequestBody ClubSportif clubSportifRequest) {
+    public ResponseEntity<?> update(HttpServletRequest request, @RequestBody Equipe equipe) {
         String region = Utils.obtenirCookieRegion(request);
         Connection connection = DatabaseConnection.getConnection(region, region);
         try {
             Statement statement = null;
             ResultSet resultSet = null;
             statement = connection.createStatement();
-            String sql = "UPDATE TATABLE_" + region + " SET NomClub = '" + clubSportifRequest.getNomClub() + "' WHERE CodeClub = '" + clubSportifRequest.getCodeClub() + "'";
+            String sql = "UPDATE equipe_" + region + " SET CodeClub = '" + equipe.getCodeClub() + "', CodeJoueur = '" + equipe.getCodeJoueur() + "', DateDebutContrat = " + Utils.transformDate(equipe.getDateDebutContrat()) + ", DateFinContrat = " + Utils.transformDate(equipe.getDateFinContrat()) + ", NumeroMaillot = " + equipe.getNumeroMaillot() + ", Poste = '" + equipe.getPoste() + "' WHERE Id = '" + equipe.getId() + "'";
             statement.executeUpdate(sql);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -104,14 +104,14 @@ public class EquipeController {
     }
 
     @DeleteMapping("")
-    public ResponseEntity<?> delete(HttpServletRequest request, @RequestBody ClubSportif clubSportifRequest) {
+    public ResponseEntity<?> delete(HttpServletRequest request, @RequestBody Equipe equipe) {
         String region = Utils.obtenirCookieRegion(request);
         Connection connection = DatabaseConnection.getConnection(region, region);
         try {
             Statement statement = null;
             ResultSet resultSet = null;
             statement = connection.createStatement();
-            String sql = "DELETE FROM TATABLE_" + region + " WHERE CodeClub = '" + clubSportifRequest.getCodeClub() + "'";
+            String sql = "DELETE FROM TATABLE_" + region + " WHERE Id = '" + equipe.getId() + "'";
             statement.executeUpdate(sql);
         } catch (SQLException e) {
             e.printStackTrace();
