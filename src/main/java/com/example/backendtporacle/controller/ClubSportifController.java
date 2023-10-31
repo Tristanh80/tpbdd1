@@ -3,6 +3,7 @@ package com.example.backendtporacle.controller;
 import com.example.backendtporacle.databaseconnection.DatabaseConnection;
 import com.example.backendtporacle.datas.request.ClubSportifRequest;
 import com.example.backendtporacle.datas.response.ClubSportif;
+import com.example.backendtporacle.datas.response.Stade;
 import com.example.backendtporacle.util.Utils;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
@@ -28,14 +29,15 @@ import java.util.List;
 public class ClubSportifController {
 //    Ici on va faire un endpoint qui va nous permettre de recuperer tous les clubs sportifs
     @GetMapping("")
-    public ResponseEntity<List<ClubSportif>> get() {
+    public ResponseEntity<List<ClubSportif>> get(HttpServletRequest request) {
         List<ClubSportif> clubSportifs = new ArrayList<>();
-        Connection connection = DatabaseConnection.getConnection("Nord", "Nord");
+        String region = Utils.obtenirCookieRegion(request);
+        Connection connection = DatabaseConnection.getConnection(region, region);
         try {
             Statement statement = null;
             ResultSet resultSet = null;
                 statement = connection.createStatement();
-                String sql = "SELECT * FROM ClubSportifCentral";
+                String sql = "SELECT * FROM ClubSportif_" + region;
                 resultSet = statement.executeQuery(sql);
 
                 while (resultSet.next()) {
@@ -62,8 +64,9 @@ public class ClubSportifController {
     @PostMapping("")
     public ResponseEntity<Boolean> createClub(HttpServletRequest request,
                                                   @RequestBody ClubSportifRequest clubSportifRequest) {
-        Connection connection = DatabaseConnection.getConnection("Nord", "Nord");
         String region = Utils.obtenirCookieRegion(request);
+        Connection connection = DatabaseConnection.getConnection(region, region);
+
         try {
             Statement statement = null;
             ResultSet resultSet = null;
@@ -83,4 +86,54 @@ public class ClubSportifController {
         }
         return ResponseEntity.ok(true);
     }
+
+
+    @GetMapping("f")
+    public ResponseEntity<List<?>> gett(HttpServletRequest request) {
+        String region = Utils.obtenirCookieRegion(request);
+        List<Stade> stades = new ArrayList<>();
+        Connection connection = DatabaseConnection.getConnection(region, region);
+        try {
+            Statement statement = null;
+            ResultSet resultSet = null;
+            statement = connection.createStatement();
+            String sql = "SELECT * FROM LATABLE_" + region;
+            resultSet = statement.executeQuery(sql);
+            while (resultSet.next()) {
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DatabaseConnection.closeConnection(connection);
+        }
+        return ResponseEntity.ok(stades);
+    }
+
+    @PostMapping("f")
+    public ResponseEntity<Boolean> create(HttpServletRequest request,
+                                              @RequestBody ClubSportifRequest clubSportifRequest) {
+        String region = Utils.obtenirCookieRegion(request);
+        Connection connection = DatabaseConnection.getConnection(region, region);
+
+        try {
+            Statement statement = null;
+            ResultSet resultSet = null;
+            statement = connection.createStatement();
+            String uuid = Utils.generateUUID();
+            String sql =
+                    "INSERT INTO TATABLE_" + region +  " (CodeClub, NomClub) " +
+                            " VALUES " +
+                            "('"  + uuid + "', '" + clubSportifRequest.getNomClub() +  ")";
+            statement.executeUpdate(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return ResponseEntity.ok(false);
+        } finally {
+            // Fermez les ressources
+            DatabaseConnection.closeConnection(connection);
+        }
+        return ResponseEntity.ok(true);
+    }
+
 }
