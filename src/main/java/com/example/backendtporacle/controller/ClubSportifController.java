@@ -30,7 +30,7 @@ import java.util.List;
 @RequestMapping("/clubsportif")
 public class ClubSportifController {
 //    Ici on va faire un endpoint qui va nous permettre de recuperer tous les clubs sportifs
-    @GetMapping("/listeClubsSportifs")
+    @GetMapping("")
     public ResponseEntity<List<ClubSportif>> get(HttpServletRequest request) {
         List<ClubSportif> clubSportifs = new ArrayList<>();
         String region = Utils.obtenirCookieRegion(request);
