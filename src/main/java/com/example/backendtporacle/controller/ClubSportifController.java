@@ -73,58 +73,9 @@ public class ClubSportifController {
             statement = connection.createStatement();
             String uuid = Utils.generateUUID();
             String sql =
-                    "INSERT INTO ClubSportif_" + region +  " (CodeClub, NomClub, DateCreation, Dirigeant, Ville, " +
+                    "INSERT INTO ClubSportif_" + region + " (CodeClub, NomClub, DateCreation, Dirigeant, Ville, " +
                             "Region) VALUES " +
-                            "('"  + uuid + "', '" + clubSportifRequest.getNomClub() + "', " + Utils.transformDate(clubSportifRequest.getDateCreation()) + ", '" + clubSportifRequest.getDirigeant() + "', '" + clubSportifRequest.getVille() + "', " + clubSportifRequest.getRegion() + ")";
-            statement.executeUpdate(sql);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return ResponseEntity.ok(false);
-        } finally {
-            // Fermez les ressources
-            DatabaseConnection.closeConnection(connection);
-        }
-        return ResponseEntity.ok(true);
-    }
-
-
-    @GetMapping("f")
-    public ResponseEntity<List<?>> gett(HttpServletRequest request) {
-        String region = Utils.obtenirCookieRegion(request);
-        List<Stade> stades = new ArrayList<>();
-        Connection connection = DatabaseConnection.getConnection(region, region);
-        try {
-            Statement statement = null;
-            ResultSet resultSet = null;
-            statement = connection.createStatement();
-            String sql = "SELECT * FROM LATABLE_" + region;
-            resultSet = statement.executeQuery(sql);
-            while (resultSet.next()) {
-
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            DatabaseConnection.closeConnection(connection);
-        }
-        return ResponseEntity.ok(stades);
-    }
-
-    @PostMapping("f")
-    public ResponseEntity<Boolean> create(HttpServletRequest request,
-                                              @RequestBody ClubSportifRequest clubSportifRequest) {
-        String region = Utils.obtenirCookieRegion(request);
-        Connection connection = DatabaseConnection.getConnection(region, region);
-
-        try {
-            Statement statement = null;
-            ResultSet resultSet = null;
-            statement = connection.createStatement();
-            String uuid = Utils.generateUUID();
-            String sql =
-                    "INSERT INTO TATABLE_" + region +  " (CodeClub, NomClub) " +
-                            " VALUES " +
-                            "('"  + uuid + "', '" + clubSportifRequest.getNomClub() +  ")";
+                            "('" + uuid + "', '" + clubSportifRequest.getNomClub() + "', " + Utils.transformDate(clubSportifRequest.getDateCreation()) + ", '" + clubSportifRequest.getDirigeant() + "', '" + clubSportifRequest.getVille() + "', " + clubSportifRequest.getRegion() + ")";
             statement.executeUpdate(sql);
         } catch (SQLException e) {
             e.printStackTrace();
