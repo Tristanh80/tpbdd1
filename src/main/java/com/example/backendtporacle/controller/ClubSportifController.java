@@ -1,14 +1,16 @@
 package com.example.backendtporacle.controller;
 
 import com.example.backendtporacle.databaseconnection.DatabaseConnection;
-import com.example.backendtporacle.datas.ClubSportif;
+import com.example.backendtporacle.datas.request.ClubSportifRequest;
+import com.example.backendtporacle.datas.response.ClubSportif;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -53,5 +55,23 @@ public class ClubSportifController {
             }
 
         return ResponseEntity.ok(clubSportifs);
+    }
+
+    @PostMapping("")
+    public ResponseEntity<ClubSportif> createClub(@RequestBody ClubSportifRequest clubSportifRequest) {
+        Connection connection = DatabaseConnection.getConnection("Nord", "Nord");
+        try {
+            Statement statement = null;
+            ResultSet resultSet = null;
+            statement = connection.createStatement();
+            String sql = "INSERT INTO ClubSportifCentral (NomClub, DateCreation, Dirigeant, Ville, Region) VALUES ('" + clubSportifRequest.getNomClub() + "', '" + clubSportifRequest.getDateCreation() + "', '" + clubSportifRequest.getDirigeant() + "', '" + clubSportifRequest.getVille() + "', " + clubSportifRequest.getRegion() + ")";
+            statement.executeUpdate(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            // Fermez les ressources
+            DatabaseConnection.closeConnection(connection);
+        }
+        return ResponseEntity.ok().build();
     }
 }

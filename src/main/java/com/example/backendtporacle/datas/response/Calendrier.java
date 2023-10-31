@@ -1,4 +1,4 @@
-package com.example.backendtporacle.datas;
+package com.example.backendtporacle.datas.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

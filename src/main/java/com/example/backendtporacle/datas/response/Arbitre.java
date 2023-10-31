@@ -1,4 +1,4 @@
-package com.example.backendtporacle.datas;
+package com.example.backendtporacle.datas.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,12 +9,11 @@ import java.sql.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Personnel {
-    Integer Code;
+public class Arbitre {
+    String Code;
     String Nom;
     String Prenom;
     Date DateDeNaissance;
-    String Fonction;
     Integer Region;
-    String Ville;
+    String ClubPrefere;
 }

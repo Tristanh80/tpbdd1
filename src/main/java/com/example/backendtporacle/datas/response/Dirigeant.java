@@ -1,15 +1,15 @@
-package com.example.backendtporacle.datas;
+package com.example.backendtporacle.datas.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class StaffTechnique {
+@NoArgsConstructor
+public class Dirigeant {
     String Code;
     String Nom;
-    String CodeClub;
-    String Fonction;
+    String Prenom;
+    String Profession;
 }
