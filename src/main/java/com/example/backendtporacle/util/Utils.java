@@ -4,6 +4,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.UUID;
 
 public class Utils {
@@ -33,5 +34,9 @@ public class Utils {
     public static String generateRandomNumber() {
         Integer randomNumber = (int) (Math.random() * 1000000000);
         return randomNumber.toString();
+    }
+
+    public static String transformTimestamp(Timestamp str) {
+        return "TO_TIMESTAMP('" + str.toString() + "', 'yyyy-mm-dd hh24:mi:ss.ff')";
     }
 }

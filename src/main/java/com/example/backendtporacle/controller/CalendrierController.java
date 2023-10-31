@@ -1,17 +1,21 @@
 package com.example.backendtporacle.controller;
 
 import com.example.backendtporacle.databaseconnection.DatabaseConnection;
+import com.example.backendtporacle.datas.request.ClubSportifRequest;
 import com.example.backendtporacle.datas.response.Calendrier;
 import com.example.backendtporacle.datas.response.CalendrierView;
 import com.example.backendtporacle.util.Utils;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,4 +55,32 @@ public class CalendrierController {
         }
         return ResponseEntity.ok(calendriers);
     }
+
+    @PostMapping("")
+    public ResponseEntity<Boolean> create(HttpServletRequest request,
+                                          @RequestBody Calendrier calendrier) {
+        String region = Utils.obtenirCookieRegion(request);
+        Connection connection = DatabaseConnection.getConnection(region, region);
+
+        try {
+            Statement statement = null;
+            ResultSet resultSet = null;
+            statement = connection.createStatement();
+            String uuid = Utils.generateRandomNumber();
+            String codeMatch = Utils.generateUUID();
+            String sql =
+                    "INSERT INTO calendrier" + " (id, CodeMatch, DateMatch, Heure, ClubA, ClubB, Stade) VALUES " +
+                            "('" + uuid + "', '" + codeMatch + "', " + Utils.transformDate(calendrier.getDateMatch()) + ", " + Utils.transformTimestamp(calendrier.getHeure()) + ", '" + calendrier.getClubA() +
+                            "', '" + calendrier.getClubB() + "', '" + calendrier.getStade() + "')";
+            statement.executeUpdate(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return ResponseEntity.ok(false);
+        } finally {
+            // Fermez les ressources
+            DatabaseConnection.closeConnection(connection);
+        }
+        return ResponseEntity.ok(true);
+    }
+
 }
