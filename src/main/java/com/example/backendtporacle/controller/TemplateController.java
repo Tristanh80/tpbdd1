@@ -23,10 +23,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/test")
+@RequestMapping("")
 public class TemplateController {
 
     @GetMapping("")
+    public ResponseEntity<String> code200() {
+        return ResponseEntity.ok("OK");
+    }
+
+
+    @GetMapping("f")
     public ResponseEntity<List<?>> get(HttpServletRequest request) {
         String region = Utils.obtenirCookieRegion(request);
         List<Stade> stades = new ArrayList<>();

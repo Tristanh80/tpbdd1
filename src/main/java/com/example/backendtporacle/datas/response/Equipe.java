@@ -14,9 +14,9 @@ public class Equipe {
     String id;
     String CodeClub;
     String CodeJoueur;
-    @JsonFormat(pattern = "dd/MM/yyyy")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     Date DateDebutContrat;
-    @JsonFormat(pattern = "dd/MM/yyyy")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     Date DateFinContrat;
     Integer NumeroMaillot;
     String Poste;

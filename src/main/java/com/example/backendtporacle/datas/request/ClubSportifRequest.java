@@ -12,7 +12,7 @@ import java.sql.Date;
 @NoArgsConstructor
 public class ClubSportifRequest {
     String NomClub;
-    @JsonFormat(pattern = "dd/MM/yyyy")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     Date DateCreation;
     String Dirigeant;
     String Ville;

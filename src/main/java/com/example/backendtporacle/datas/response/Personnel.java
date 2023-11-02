@@ -14,7 +14,7 @@ public class Personnel {
     Integer Code;
     String Nom;
     String Prenom;
-    @JsonFormat(pattern = "dd/MM/yyyy")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     Date DateDeNaissance;
     String Fonction;
     Integer Region;

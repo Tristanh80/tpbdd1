@@ -19,13 +19,13 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeHttpRequests((authorize) -> authorize
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
                 .httpBasic(Customizer.withDefaults())
                 .formLogin(req -> req
                         .successHandler(new CustomAuthenticationSuccessHandler())
                 ).logout(logout -> logout
-                        .logoutSuccessUrl("/login").invalidateHttpSession(true).deleteCookies("JSESSIONID"));
+                        .logoutSuccessUrl("/login").invalidateHttpSession(true).deleteCookies("JSESSIONID", "region"));
 
         return http.build();
     }

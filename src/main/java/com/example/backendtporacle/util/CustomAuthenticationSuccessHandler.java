@@ -20,7 +20,10 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         cookie.setMaxAge(24 * 60 * 60); // Set the cookie's maximum age to 1 day (in seconds)
         response.addCookie(cookie);
 
-        super.onAuthenticationSuccess(request, response, authentication);
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.getWriter().write("{\"success\": true}");
+
+        clearAuthenticationAttributes(request);
     }
 
 }
